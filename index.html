@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS Control Tower · Acompañamiento de cuentas</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1b1f24;--mut:#6b7380;--bd:#e2e5ea;--g:#1f9d55;--y:#e0a100;--r:#d6342c;--ac:#2f5bea;--gs:#e6f6ec;--ys:#fdf4d9;--rs:#fce8e6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151a;--card:#1b2027;--tx:#e8ebef;--mut:#98a1ad;--bd:#2c333d;--gs:#16301f;--ys:#3a2f0c;--rs:#3b1816;--ac:#6f8dff}}
+:root[data-theme="dark"]{--bg:#12151a;--card:#1b2027;--tx:#e8ebef;--mut:#98a1ad;--bd:#2c333d;--gs:#16301f;--ys:#3a2f0c;--rs:#3b1816;--ac:#6f8dff}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1200px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+h1{font-size:20px;margin:0}h1 small{display:block;font-weight:400;color:var(--mut);font-size:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.kpi b{display:block;font-size:22px;margin-top:2px}.kpi span{color:var(--mut);font-size:12px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-bottom:12px}
+h2{font-size:14px;margin:0 0 10px}
+.bar{display:flex;height:22px;border-radius:6px;overflow:hidden;margin:6px 0}
+.bar i{display:block;color:#fff;font:600 11px/22px system-ui;text-align:center;font-style:normal}
+.leg{display:flex;gap:12px;flex-wrap:wrap;color:var(--mut);font-size:12px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.G{background:var(--g)}.Y{background:var(--y)}.R{background:var(--r)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+input,select,button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:7px 10px}
+button{cursor:pointer}button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{padding:9px 8px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+th{font-size:12px;color:var(--mut);cursor:pointer;user-select:none}tr.r{cursor:pointer}tr.r:hover{background:var(--bg)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+.pG{background:var(--gs);color:var(--g)}.pY{background:var(--ys);color:var(--y)}.pR{background:var(--rs);color:var(--r)}
+.mb{display:inline-block;width:70px;height:7px;background:var(--bd);border-radius:4px;vertical-align:middle;margin-right:6px;overflow:hidden}
+.mb i{display:block;height:100%}
+#dr{position:fixed;inset:0 0 0 auto;width:min(420px,100%);background:var(--card);border-left:1px solid var(--bd);box-shadow:-8px 0 24px #0003;transform:translateX(105%);transition:.2s;overflow:auto;padding:16px;padding-top:calc(16px + env(safe-area-inset-top,0px));z-index:5}
+#dr.o{transform:none}
+.m{margin:8px 0}.m div{display:flex;justify-content:space-between;font-size:12px;color:var(--mut)}
+.m .mb{width:100%;height:8px;margin:3px 0 0;display:block}
+ul{padding-left:18px;margin:6px 0}
+.note{color:var(--mut);font-size:12px;margin-top:10px}
+.ds{color:var(--mut);font-size:12px;margin:10px 0 0;line-height:1.5}
+.fm{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.fm label{font-size:12px;color:var(--mut);display:flex;flex-direction:column;gap:3px}.fm input,.fm select{width:100%}
+.dlt{color:var(--r)}
+</style>
+</head>
+<body>
+<div class="w">
+<header>
+<h1>CS Control Tower<small>Acompañamiento de cuentas · salud, riesgo de churn y renovaciones</small></h1>
+<div class="tools"><button id="th">🌓 Tema</button></div>
+</header>
+<div class="kpis" id="kpis"></div>
+<div class="row">
+<div class="card"><h2>Distribución de la cartera por semáforo (cuentas)</h2><div id="b1"></div><p class="ds">Cuántas cuentas hay en cada estado. Verde = relación sana, amarillo = requiere atención, rojo = riesgo alto de baja. Se calcula con el Health Score de cada cuenta.</p><h2 style="margin-top:16px">Distribución del MRR por semáforo</h2><div id="b2"></div><p class="ds">Lo mismo, pero ponderado por ingreso recurrente: muestra cuánta facturación está en cada estado. Si el rojo pesa más acá que arriba, las cuentas grandes son las que están en riesgo.</p>
+<div class="leg"><span><i class="dot G"></i>Saludable ≥70</span><span><i class="dot Y"></i>Atención 45–69</span><span><i class="dot R"></i>Riesgo &lt;45</span></div></div>
+<div class="card"><h2>Top 5 · Cuentas con mayor chance de baja</h2><div id="top"></div><p class="ds">Ranking de las cuentas con mayor probabilidad estimada de cancelar, combinando Health Score, cercanía de la renovación y mora. Hacé clic en una cuenta para ver el detalle y las acciones recomendadas.</p></div>
+<div class="card"><h2>Renovaciones próximas (≤ 90 días)</h2><div id="ren"></div><p class="ds">Contratos que vencen en los próximos 90 días, ordenados por urgencia. El punto de color es el semáforo de la cuenta: priorizá las que están en amarillo o rojo.</p></div>
+</div>
+<div class="card" style="margin-bottom:12px"><h2>Tareas realizadas: mes actual vs. mes anterior</h2><div id="tkb"></div><div class="leg" style="margin-top:8px"><span><i class="dot" style="background:var(--ac)"></i>Mes actual</span><span><i class="dot" style="background:var(--mut)"></i>Mes anterior</span></div><p class="ds">Compara las tareas de seguimiento completadas por cuenta (barra azul = mes actual, gris = mes anterior). El % es la variación: (actual − anterior) ÷ anterior. ▲ verde = más actividad que el mes pasado; ▼ rojo = menos. Cargá los números al agregar o editar cada cuenta.</p></div>
+<div class="card">
+<h2>Cuentas</h2>
+<div class="tools">
+<input id="q" placeholder="Buscar cuenta…">
+<select id="csm"><option value="">Todos los CSM</option></select><select id="sk" title="Ordenar por"></select><button id="sd"></button>
+<span id="fs"></span><button class="on" onclick="fo()">＋ Agregar cuenta</button><button onclick="io()">⬆ Importar</button><button onclick="ex(1)">⬇ Exportar</button><button onclick="cf(this,clr)">Limpiar ejemplos</button>
+</div>
+<div class="tw"><table><thead><tr id="hd"></tr></thead><tbody id="tb"></tbody></table></div>
+<p class="note">Health Score = Uso 25% · Adopción 20% · NPS 15% · Tickets abiertos 15% · Último contacto 10% · Pagos 10% · Champion 5%. Chance de baja = (100 − Health) × 0,9, +8 si renueva en ≤60 días, +6 si hay mora &gt;30 días. Tareas: variación % = (mes actual − mes anterior) ÷ mes anterior. Los datos iniciales son de ejemplo: usá «Limpiar ejemplos» y cargá tus cuentas con «Agregar cuenta».</p>
+</div>
+</div>
+<dialog id="id" style="border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);max-width:720px;width:calc(100% - 24px);padding:16px"><h2 style="font-size:17px">Importar cuentas (carga masiva)</h2><p class="ds" style="margin-top:0">Pegá las filas desde Excel o Google Sheets, o subí un archivo CSV. Orden de columnas: <b>Cuenta, CSM, Plan, MRR, Renueva en (días), Uso %, Adopción %, NPS, Tickets, Últ. contacto (d), Mora (d), Champion (Sí/No), Tareas mes actual, Tareas mes anterior</b>. La fila de títulos es opcional. Si el nombre ya existe, la cuenta se <b>actualiza</b>; si no, se <b>agrega</b>. Para editar en masa: exportá, cambiá en Excel y volvé a importar.</p><input type="file" id="imf" accept=".csv,.tsv,.txt"><textarea id="imt" rows="9" style="width:100%;margin-top:8px;font:12px monospace;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px" placeholder="Acme Logística	Ana	Enterprise	18500	35	82	76	8	2	6	0	Sí	22	18"></textarea><p id="ie" class="ds"></p><div class="tools" style="margin-top:8px"><button class="on" onclick="imp()">Importar</button><button onclick="ex(0)">⬇ Plantilla CSV</button><button onclick="document.getElementById('id').close()">Cerrar</button></div></dialog>
+<dialog id="fd" style="border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);max-width:600px;width:calc(100% - 24px);padding:16px"><h2 id="ft" style="font-size:17px">Agregar cuenta</h2><div class="fm" id="ff"></div><p class="ds">Mes actual: <b id="m1"></b> · Mes anterior: <b id="m2"></b>. Cargá cuántas tareas realizaste en cada uno para ver la variación %.</p><p id="fe" style="color:var(--r);font-size:12px;margin:6px 0 0"></p><div class="tools" style="margin-top:10px"><button class="on" onclick="sv()">Guardar</button><button onclick="document.getElementById('fd').close()">Cancelar</button></div></dialog>
+<aside id="dr"></aside>
+<script>
+let DATA=[];const SEED=[
+["Acme Logística","Ana","Enterprise",18500,35,82,76,8,2,6,0,1],
+["Boreal Foods","Bruno","Mid-Market",6200,52,41,38,4,7,41,35,0],
+["Cobalto Bank","Ana","Enterprise",24000,120,91,88,9,1,3,0,1],
+["Delta Salud","Carla","Mid-Market",5400,28,55,47,5,5,22,12,1],
+["Eólica Sur","Bruno","SMB",1900,75,30,25,3,6,58,48,0],
+["Fénix Retail","Carla","Mid-Market",7800,160,74,69,7,3,12,0,1],
+["Gaia Energy","Ana","Enterprise",15200,48,63,58,6,4,18,0,1],
+["Horizonte Edu","Diego","SMB",2300,200,88,81,9,0,5,0,1],
+["Ícaro Telecom","Diego","Enterprise",21000,22,48,44,4,8,35,28,0],
+["Jade Seguros","Carla","Mid-Market",6900,95,79,72,8,2,9,0,1],
+["Kappa Tech","Bruno","SMB",1500,40,58,61,6,3,27,0,0],
+["Lumen Pharma","Ana","Mid-Market",8800,68,36,33,2,9,47,40,0],
+["Mar Azul Hotéis","Diego","SMB",2700,140,69,64,7,2,14,0,1],
+["Nova Agro","Carla","Mid-Market",5100,30,67,50,6,6,31,5,1]
+].map(a=>({n:a[0],csm:a[1],plan:a[2],mrr:a[3],ren:a[4],uso:a[5],ado:a[6],nps:a[7],tk:a[8],lc:a[9],mora:a[10],ch:a[11],tm:Math.round(a[5]/6+a[7]),tp:Math.round(a[5]/6+a[7]+(a[3]%7)-3)}));
+const cl=(x,a=0,b=100)=>Math.max(a,Math.min(b,x));
+function calc(a){
+a.m={uso:a.uso,ado:a.ado,nps:a.nps*10,tk:cl(100-a.tk*12),lc:cl(100-a.lc*2.5),pg:cl(100-Math.min(a.mora,60)*1.6),ch:a.ch?100:20};
+a.h=Math.round(.25*a.m.uso+.2*a.m.ado+.15*a.m.nps+.15*a.m.tk+.1*a.m.lc+.1*a.m.pg+.05*a.m.ch);
+a.p=Math.round(cl((100-a.h)*.9+(a.ren<=60?8:0)+(a.mora>30?6:0),2,97));
+a.s=a.h>=70?"G":a.h>=45?"Y":"R";
+a.pc=a.tp>0?Math.round((a.tm-a.tp)/a.tp*100):(a.tm>0?100:0);
+return a}
+const $=id=>document.getElementById(id),fmt=n=>"$"+n.toLocaleString("es-AR"),col={G:"var(--g)",Y:"var(--y)",R:"var(--r)"},lab={G:"Saludable",Y:"Atención",R:"Riesgo"};
+const sc=v=>v>=70?"G":v>=45?"Y":"R";
+let st={q:"",csm:"",s:"",k:"p",d:-1};
+const cols=[["n","Cuenta"],["s","Semáforo"],["h","Health"],["p","Chance baja"],["mrr","MRR"],["ren","Renueva (d)"],["uso","Uso"],["nps","NPS"],["tk","Tickets"],["lc","Últ. contacto (d)"],["tm","Tareas mes / ant."],["pc","Δ% tareas"],["csm","CSM"],["_",""]];
+function bar(v,s){return `<span class="mb"><i style="width:${v}%;background:${col[s]}"></i></span>`}
+function kpis(){
+const T=DATA.reduce((x,a)=>x+a.mrr,0),R=DATA.filter(a=>a.s=="R"),risk=R.reduce((x,a)=>x+a.mrr,0);
+const exp=DATA.reduce((x,a)=>x+a.mrr*a.p/100,0),ren=DATA.filter(a=>a.ren<=90);
+const nps=(DATA.reduce((x,a)=>x+a.nps,0)/DATA.length).toFixed(1),hs=Math.round(DATA.reduce((x,a)=>x+a.h,0)/DATA.length);
+const k=[["Cuentas",DATA.length],["MRR total",fmt(T)],["MRR en riesgo",fmt(risk)+" ("+Math.round(risk/T*100)+"%)"],["MRR esperado a perder",fmt(Math.round(exp))],["Health medio",hs],["NPS medio",nps],["Cuentas en rojo",R.length],["Renuevan ≤90d",ren.length+" · "+fmt(ren.reduce((x,a)=>x+a.mrr,0))],["Tareas del mes",tt().a+" ("+tt().s+" vs ant.)"]];
+$("kpis").innerHTML=k.map(x=>`<div class="card kpi"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("");
+const seg=(f)=>["G","Y","R"].map(s=>{const v=DATA.filter(a=>a.s==s).reduce((x,a)=>x+f(a),0);return[s,v]});
+const draw=(el,f,tot,u)=>$(el).innerHTML=`<div class="bar">${seg(f).filter(x=>x[1]).map(x=>`<i class="${x[0]}" style="width:${x[1]/tot*100}%">${u(x[1])}</i>`).join("")}</div>`;
+draw("b1",()=>1,DATA.length,v=>v);draw("b2",a=>a.mrr,T,v=>Math.round(v/T*100)+"%");
+$("top").innerHTML=[...DATA].sort((a,b)=>b.p-a.p).slice(0,5).map(a=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);cursor:pointer" onclick="op('${a.n}')"><span>${a.n}</span><span><b style="color:${col[a.s]}">${a.p}%</b> · ${fmt(a.mrr)}</span></div>`).join("");
+$("ren").innerHTML=[...ren].sort((a,b)=>a.ren-b.ren).map(a=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);cursor:pointer" onclick="op('${a.n}')"><span><i class="dot ${a.s}"></i>${a.n}</span><span>${a.ren} d · ${fmt(a.mrr)}</span></div>`).join("");
+}
+function table(){$("sk").value=st.k;$("sd").textContent=st.d>0?"↑ Menor a mayor":"↓ Mayor a menor";
+$("hd").innerHTML=cols.map(c=>`<th onclick="so('${c[0]}')">${c[1]}${st.k==c[0]?(st.d>0?" ▲":" ▼"):""}</th>`).join("");
+let L=DATA.filter(a=>(!st.q||a.n.toLowerCase().includes(st.q))&&(!st.csm||a.csm==st.csm)&&(!st.s||a.s==st.s));
+const key=st.k=="p"||st.k=="n"||st.k=="csm"||st.k=="s"?st.k:st.k;
+L.sort((a,b)=>{const f=x=>st.k=="s"?x.h:(typeof x[st.k]=="string"?x[st.k].toLowerCase():x[st.k]);return(f(a)>f(b)?1:f(a)<f(b)?-1:0)*st.d});
+$("tb").innerHTML=L.map(a=>`<tr class="r" onclick="op('${a.n}')"><td><b>${a.n}</b><br><span style="color:var(--mut);font-size:12px">${a.plan}</span></td><td><span class="pill p${a.s}">${lab[a.s]}</span></td><td>${bar(a.h,a.s)}${a.h}</td><td><b style="color:${col[a.s]}">${a.p}%</b></td><td>${fmt(a.mrr)}</td><td>${a.ren}</td><td>${a.uso}%</td><td>${a.nps}</td><td>${a.tk}</td><td>${a.lc}</td><td>${a.tm}<span style="color:var(--mut)"> / ${a.tp}</span></td><td>${pt(a)}</td><td>${a.csm}</td><td><button onclick="event.stopPropagation();ed('${a.n}')">✏️ Editar</button></td></tr>`).join("")||`<tr><td colspan="14">Sin resultados</td></tr>`;
+}
+function so(k){if(k=="_")return;st.d=st.k==k?-st.d:(k=="n"||k=="csm"?1:-1);st.k=k;table()}
+function filt(){$("fs").innerHTML=[["","Todos"],["R","🔴 Riesgo"],["Y","🟡 Atención"],["G","🟢 Saludable"]].map(x=>`<button class="${st.s==x[0]?"on":""}" onclick="st.s='${x[0]}';filt();table()">${x[1]}</button>`).join(" ")}
+function acts(a){
+const r=[];
+if(a.mora>30)r.push("Escalar cobranza con Finanzas y definir plan de pago antes de la renovación.");
+if(a.uso<50)r.push("Agendar sesión de re-onboarding enfocada en los casos de uso de mayor valor.");
+if(a.ado<50)r.push("Plan de adopción: activar 2–3 funcionalidades clave con campeón del cliente.");
+if(a.tk>=5)r.push("Revisar tickets abiertos con Soporte y comprometer fechas de resolución.");
+if(a.lc>30)r.push("Retomar contacto ejecutivo: reunión con sponsor en los próximos 7 días.");
+if(!a.ch)r.push("Identificar y desarrollar un nuevo champion; mapear stakeholders.");
+if(a.nps<=6)r.push("Cerrar el loop del NPS: llamada con el detractor y plan de acción.");
+if(a.ren<=60)r.push("Iniciar playbook de renovación (QBR + propuesta de valor entregado).");
+if(!r.length)r.push("Cuenta sana: explorar upsell/cross-sell y pedir referencia o caso de éxito.");
+return r;
+}
+function op(n){
+const a=DATA.find(x=>x.n==n);
+const M=[["Uso de producto",a.m.uso,a.uso+"%"],["Adopción de features",a.m.ado,a.ado+"%"],["NPS",a.m.nps,a.nps+"/10"],["Tickets abiertos",a.m.tk,a.tk],["Último contacto",a.m.lc,a.lc+" días"],["Pagos",a.m.pg,a.mora?a.mora+" días de mora":"Al día"],["Champion activo",a.m.ch,a.ch?"Sí":"No"]];
+$("dr").innerHTML=`<button onclick="cl2()" style="float:right">✕</button><h2 style="font-size:18px">${a.n}</h2><p style="color:var(--mut);margin:0 0 10px">${a.plan} · CSM ${a.csm} · ${fmt(a.mrr)}/mes · renueva en ${a.ren} días</p>
+<div style="display:flex;gap:10px;margin-bottom:10px"><div class="card" style="flex:1"><span class="pill p${a.s}">${lab[a.s]}</span><b style="display:block;font-size:24px">${a.h}</b><span style="color:var(--mut);font-size:12px">Health Score</span></div><div class="card" style="flex:1"><b style="display:block;font-size:24px;margin-top:22px;color:${col[a.s]}">${a.p}%</b><span style="color:var(--mut);font-size:12px">Chance de baja</span></div></div>
+<h2>Métricas</h2>${M.map(m=>{const s=sc(m[1]);return`<div class="m"><div><span>${m[0]}</span><b style="color:${col[s]}">${m[2]}</b></div><span class="mb"><i style="width:${m[1]}%;background:${col[s]}"></i></span></div>`}).join("")}
+<h2 style="margin-top:14px">Acciones recomendadas</h2><ul>${acts(a).map(x=>`<li>${x}</li>`).join("")}</ul>
+<p class="note">MRR esperado a perder: ${fmt(Math.round(a.mrr*a.p/100))}/mes</p><h2 style="margin-top:14px">Tareas realizadas</h2><p style="margin:4px 0">${a.tm} este mes vs ${a.tp} el mes anterior · ${pt(a)}</p><div class="tools" style="margin-top:14px"><button onclick="ed('${a.n}')">✏️ Editar</button><button class="dlt" onclick="cf(this,()=>rm('${a.n}'))">🗑 Eliminar</button></div>`;
+$("dr").classList.add("o");
+}
+function cl2(){$("dr").classList.remove("o")}
+$("q").oninput=e=>{st.q=e.target.value.toLowerCase();table()};
+$("csm").onchange=e=>{st.csm=e.target.value;table()};
+
+$("th").onclick=()=>{const r=document.documentElement,d=matchMedia("(prefers-color-scheme:dark)").matches;const cur=r.dataset.theme||(d?"dark":"light");r.dataset.theme=cur=="dark"?"light":"dark"};
+const mn=d=>d.toLocaleString("es-AR",{month:"long"}),NOW=new Date(),MC=mn(NOW),MP=mn(new Date(NOW.getFullYear(),NOW.getMonth()-1,1));
+const san=s=>String(s).replace(/['"\\<>&`]/g,"").trim(),LS="cs_accounts_v1";
+const F=[["n","Cuenta","text"],["csm","CSM responsable","text"],["plan","Plan","sel"],["mrr","MRR ($/mes)","number"],["ren","Renueva en (días)","number"],["uso","Uso de producto (%)","number"],["ado","Adopción de features (%)","number"],["nps","NPS (0–10)","number"],["tk","Tickets abiertos","number"],["lc","Último contacto (días)","number"],["mora","Mora de pago (días)","number"],["ch","Champion activo","ch"],["tm","Tareas realizadas · mes actual","number"],["tp","Tareas realizadas · mes anterior","number"]];
+let EO=null,store=null;
+function tt(){const a=DATA.reduce((x,c)=>x+c.tm,0),p=DATA.reduce((x,c)=>x+c.tp,0),c=p?Math.round((a-p)/p*100):(a?100:0);return{a,p,c,s:(c>0?"+":"")+c+"%"}}
+function pt(a){const c=a.pc;return`<b style="color:${c>0?"var(--g)":c<0?"var(--r)":"var(--mut)"}">${c>0?"▲ +":c<0?"▼ ":""}${c}%</b>`}
+function tasks(){const t=tt(),mx=Math.max(1,...DATA.map(a=>Math.max(a.tm,a.tp)));
+$("tkb").innerHTML=`<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:baseline;margin-bottom:10px"><span><b style="font-size:24px">${t.a}</b> <span class="ds">${MC} (actual)</span></span><span><b style="font-size:24px">${t.p}</b> <span class="ds">${MP} (anterior)</span></span><span style="font-size:18px">${pt({pc:t.c})}</span></div>`+[...DATA].sort((a,b)=>b.tm-a.tm).map(a=>`<div style="display:grid;grid-template-columns:130px 1fr 110px;gap:8px;align-items:center;padding:3px 0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.n}</span><span><span class="mb" style="width:100%;height:6px;margin:1px 0"><i style="width:${a.tp/mx*100}%;background:var(--mut)"></i></span><span class="mb" style="width:100%;height:6px;margin:1px 0"><i style="width:${a.tm/mx*100}%;background:var(--ac)"></i></span></span><span>${a.tm}/${a.tp} ${pt(a)}</span></div>`).join("")}
+function csmOpts(){const v=st.csm;$("csm").innerHTML='<option value="">Todos los CSM</option>'+[...new Set(DATA.map(a=>a.csm))].map(c=>`<option${c==v?" selected":""}>${c}</option>`).join("")}
+function render(){
+if(DATA.length){kpis()}else{$("kpis").innerHTML='<div class="card" style="grid-column:1/-1">Todavía no hay cuentas. Usá «＋ Agregar cuenta» para cargar las tuyas.</div>';["b1","b2","top","ren"].forEach(i=>$(i).innerHTML="")}
+tasks();csmOpts();filt();table()}
+function save(){const j=JSON.stringify({a:DATA.map(a=>({n:a.n,csm:a.csm,plan:a.plan,mrr:a.mrr,ren:a.ren,uso:a.uso,ado:a.ado,nps:a.nps,tk:a.tk,lc:a.lc,mora:a.mora,ch:a.ch,tm:a.tm,tp:a.tp}))});try{localStorage.setItem(LS,j)}catch(e){}if(store)store.set({j}).catch(()=>{})}
+function load(j){try{const o=JSON.parse(j);if(o&&Array.isArray(o.a)){DATA=o.a.map(calc);return true}}catch(e){}return false}
+function cf(b,fn){if(b.dataset.c)return fn();b.dataset.t=b.textContent;b.dataset.c=1;b.textContent="¿Seguro? Confirmar";setTimeout(()=>{delete b.dataset.c;b.textContent=b.dataset.t},4000)}
+function clr(){DATA=[];save();render()}
+function fo(a){EO=a?a.n:null;const v=a||{n:"",csm:"",plan:"Mid-Market",mrr:0,ren:90,uso:50,ado:50,nps:7,tk:0,lc:7,mora:0,ch:1,tm:0,tp:0};
+$("ft").textContent=a?"Editar cuenta":"Agregar cuenta";$("fe").textContent="";
+$("ff").innerHTML=F.map(f=>{const x=v[f[0]];const i=f[2]=="sel"?`<select id="f_plan">${["Enterprise","Mid-Market","SMB"].map(p=>`<option${p==x?" selected":""}>${p}</option>`).join("")}</select>`:f[2]=="ch"?`<select id="f_ch"><option value="1"${x?" selected":""}>Sí</option><option value="0"${x?"":" selected"}>No</option></select>`:`<input id="f_${f[0]}" type="${f[2]}" value="${x}"${f[2]=="number"?' min="0"':""}>`;return`<label>${f[1]}${i}</label>`}).join("");
+$("m1").textContent=MC;$("m2").textContent=MP;cl2();$("fd").showModal()}
+function ed(n){fo(DATA.find(x=>x.n==n))}
+const HD=["Cuenta","CSM","Plan","MRR","Renueva en (dias)","Uso %","Adopcion %","NPS","Tickets","Ultimo contacto (dias)","Mora (dias)","Champion","Tareas mes actual","Tareas mes anterior"];
+function io(){$("ie").textContent="";$("imt").value="";$("id").showModal()}
+$("imf").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("imt").value=r.result;$("ie").textContent="Archivo cargado: "+f.name+". Revisá y tocá Importar."};r.readAsText(f)};
+function toCsv(rows){return rows.map(r=>r.map(c=>{c=String(c);return /[;"\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c}).join(";")).join("\n")}
+async function ex(w){const rows=[HD].concat(w?DATA.map(a=>[a.n,a.csm,a.plan,a.mrr,a.ren,a.uso,a.ado,a.nps,a.tk,a.lc,a.mora,a.ch?"Si":"No",a.tm,a.tp]):[["Acme Logistica","Ana","Enterprise",18500,35,82,76,8,2,6,0,"Si",22,18]]);const csv="\ufeff"+toCsv(rows);
+try{if(typeof claude==="undefined"){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download=w?"cuentas-cs.csv":"plantilla-cuentas-cs.csv";a.click();return}const d=await claude.use("downloads");if(!d)throw 0;await d.save({filename:w?"cuentas-cs.csv":"plantilla-cuentas-cs.csv",data:csv})}catch(e){$("imt").value=csv.slice(1);$("ie").textContent="No se pudo descargar el archivo. Copiá este texto y pegalo en Excel o Google Sheets.";if(!$("id").open)$("id").showModal()}}
+function imp(){const t=$("imt").value.replace(/\r/g,"").split("\n").filter(l=>l.trim());if(!t.length){$("ie").textContent="No hay filas para importar.";return}
+const nm=s=>{const x=parseFloat(String(s||"").replace(/[$\s%]/g,"").replace(",","."));return isNaN(x)||x<0?0:x};
+const sp=l=>{const d=l.includes("\t")?"\t":l.includes(";")?";":",";return l.split(d).map(c=>c.trim().replace(/^"|"$/g,""))};
+let add=0,upd=0,skip=0;
+t.forEach((l,k)=>{const c=sp(l);if(k==0&&isNaN(parseFloat(String(c[3]||"").replace(",",".")))&&c.length>3)return;const n=san(c[0]||"");if(!n){skip++;return}
+const pl=(c[2]||"").toLowerCase();const o={n,csm:san(c[1]||"")||"Sin CSM",plan:pl.startsWith("ent")?"Enterprise":pl.startsWith("smb")||pl.startsWith("peq")?"SMB":"Mid-Market",mrr:nm(c[3]),ren:Math.round(nm(c[4])),uso:Math.min(100,nm(c[5])),ado:Math.min(100,nm(c[6])),nps:Math.min(10,nm(c[7])),tk:Math.round(nm(c[8])),lc:Math.round(nm(c[9])),mora:Math.round(nm(c[10])),ch:/^(s|y|1|t|v)/i.test((c[11]||"").trim())?1:0,tm:Math.round(nm(c[12])),tp:Math.round(nm(c[13]))};
+calc(o);const i=DATA.findIndex(x=>x.n.toLowerCase()==n.toLowerCase());if(i>=0){DATA[i]=o;upd++}else{DATA.push(o);add++}});
+save();render();$("ie").textContent=add+" cuentas nuevas, "+upd+" actualizadas"+(skip?", "+skip+" filas omitidas (sin nombre)":"")+"."}
+function rm(n){DATA=DATA.filter(x=>x.n!=n);save();render();cl2()}
+function sv(){const g=k=>$("f_"+k).value,num=(k,hi)=>{let x=parseFloat(g(k));x=isNaN(x)||x<0?0:x;return hi?Math.min(x,hi):x};
+const n=san(g("n"));if(!n){$("fe").textContent="Poné el nombre de la cuenta.";return}
+const o={n,csm:san(g("csm"))||"Sin CSM",plan:g("plan"),mrr:num("mrr"),ren:Math.round(num("ren")),uso:num("uso",100),ado:num("ado",100),nps:num("nps",10),tk:Math.round(num("tk")),lc:Math.round(num("lc")),mora:Math.round(num("mora")),ch:+g("ch"),tm:Math.round(num("tm")),tp:Math.round(num("tp"))};
+const i=EO?DATA.findIndex(x=>x.n==EO):-1;let c=2;while(DATA.some((x,j)=>x.n==o.n&&j!=i)){o.n=n+" ("+(c++)+")"}
+calc(o);if(i>=0)DATA[i]=o;else DATA.push(o);save();render();$("fd").close()}
+$("sk").innerHTML=cols.filter(c=>c[0]!="_").map(c=>`<option value="${c[0]}">${c[1]}</option>`).join("");
+$("sk").onchange=e=>{st.k=e.target.value;table()};
+$("sd").onclick=()=>{st.d=-st.d;table()};
+let ls=null;try{ls=localStorage.getItem(LS)}catch(e){}
+if(!(ls&&load(ls)))DATA=SEED.map(calc);
+render();
+(async()=>{try{if(typeof claude==="undefined")return;const[u,db]=await Promise.all([claude.use("user"),claude.use("db")]);if(!u||!db)return;const id=await u.id();if(!id)return;store=db.collection("data/users/"+id).doc("cs");const s=await store.get();const j=s.exists&&s.data().j;if(j&&load(j)){try{localStorage.setItem(LS,j)}catch(e){}render()}else save()}catch(e){}})();
+</script>
+</body>
+</html>
