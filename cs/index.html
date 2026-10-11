@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cartera · Customer Success</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<aside id="sb"><div class="wm">Cartera<small>Customer Success</small></div><nav><a href="#s-resumen">Resumen</a><a href="#s-ind">Indicadores CS</a><a href="#s-riesgo">Riesgo y renovaciones</a><a href="#s-tareas">Tareas</a><a href="#s-cuentas">Cuentas</a></nav><p class="sf">Tus cuentas se guardan en este navegador. Exportá un respaldo de vez en cuando.</p></aside>
+<div class="w">
+<header>
+<h1>Cartera de Erika<small id="dt"></small></h1>
+<div class="tools"><button id="th">Tema</button></div>
+</header>
+<div id="fb"><label>Plan <select id="fp"><option value="">Todos</option><option>Enterprise</option><option>Mid-Market</option><option>SMB</option></select></label><label>Renovación <select id="fr"><option value="">Cualquiera</option><option value="30">≤ 30 días</option><option value="60">≤ 60 días</option><option value="90">≤ 90 días</option><option value="180">≤ 180 días</option></select></label><span id="fs"></span><button id="fx">Limpiar filtros</button><span id="fc" class="ds"></span></div>
+<span id="s-resumen"></span><div class="kpis" id="kpis"></div>
+<span id="s-ind"></span><div class="card" style="margin-bottom:28px"><h2>Indicadores de Customer Success</h2><div id="ind" class="indg"></div><p class="ds">Cada tarjeta se compara con una referencia habitual de SaaS B2B: borde verde = objetivo cumplido, amarillo = atención, rojo = crítico. Se recalculan con los filtros activos. Las cuentas dadas de baja entran en churn y retención, y quedan fuera del resto de los gráficos.</p></div>
+<div class="row">
+<div class="card"><h2>Distribución de la cartera por semáforo (cuentas)</h2><div id="c1"></div><p class="ds">Cuántas cuentas hay en cada estado. Verde = relación sana, amarillo = requiere atención, rojo = riesgo alto de baja. Se calcula con el Health Score de cada cuenta.</p><h2 style="margin-top:16px">Distribución del MRR por semáforo</h2><div id="c2"></div><p class="ds">Lo mismo, pero ponderado por ingreso recurrente: muestra cuánta facturación está en cada estado. Si el rojo pesa más acá que arriba, las cuentas grandes son las que están en riesgo.</p>
+<div class="leg"><span><i class="dot G"></i>Saludable ≥70</span><span><i class="dot Y"></i>Atención 45–69</span><span><i class="dot R"></i>Riesgo &lt;45</span></div></div>
+<div class="card"><h2>Top 5 · Cuentas con mayor chance de baja</h2><div id="top"></div><p class="ds">Ranking de las cuentas con mayor probabilidad estimada de cancelar, combinando Health Score, cercanía de la renovación y mora. Hacé clic en una cuenta para ver el detalle y las acciones recomendadas.</p></div>
+<div class="card"><h2>Renovaciones próximas (≤ 90 días)</h2><div id="ren"></div><p class="ds">Contratos que vencen en los próximos 90 días, ordenados por urgencia. El punto de color es el semáforo de la cuenta: priorizá las que están en amarillo o rojo.</p></div>
+</div>
+<span id="s-riesgo"></span><div class="row">
+<div class="card"><h2>Mapa de riesgo: Health vs. MRR</h2><div id="c3"></div><p class="ds">Cada punto es una cuenta. Hacia la izquierda (zona roja) están las de peor salud y hacia arriba las de mayor facturación. Las que quedan arriba a la izquierda son la prioridad: mucho ingreso en riesgo. Hacé clic en un punto para ver el detalle.</p></div>
+<div class="card"><h2>MRR por plan y semáforo</h2><div id="c4"></div><p class="ds">Ingreso recurrente de cada plan (Enterprise, Mid-Market, SMB) dividido por estado. Muestra en qué segmento se concentra el riesgo.</p></div>
+<div class="card"><h2>Distribución de NPS</h2><div id="c7"></div><p class="ds">Promotores (9–10), pasivos (7–8) y detractores (0–6) entre las cuentas activas. El número del centro es el NPS: % de promotores menos % de detractores. Sobre 50 es excelente; bajo 30, hay trabajo por hacer.</p></div>
+<div class="card"><h2>Cascada de MRR: de inicio a fin</h2><div id="c8"></div><p class="ds">Cómo se movió el ingreso recurrente: parte del MRR inicial, suma la expansión (upsell), resta la contracción (downgrades) y las bajas, y llega al MRR actual. Explica el GRR y el NRR.</p></div>
+<div class="card"><h2>MRR a renovar por plazo</h2><div id="c5"></div><p class="ds">Ingreso recurrente que vence en cada franja de días, coloreado por semáforo. Una barra alta con rojo en los primeros 60 días indica renovaciones críticas.</p></div>
+<div class="card"><h2>Salud promedio por dimensión</h2><div id="c6"></div><p class="ds">Promedio de la cartera en cada factor del Health Score (0 a 100). La dimensión más baja es la que más arrastra a la cartera y la que conviene atacar primero.</p></div>
+</div>
+<span id="s-tareas"></span><div class="card" style="margin-bottom:12px"><h2>Tareas realizadas: mes actual vs. mes anterior</h2><div id="tkb"></div><div class="leg" style="margin-top:8px"><span><i class="dot" style="background:var(--ac)"></i>Mes actual</span><span><i class="dot" style="background:var(--mut)"></i>Mes anterior</span></div><p class="ds">Compara las tareas de seguimiento completadas por cuenta (barra azul = mes actual, gris = mes anterior). El % es la variación: (actual − anterior) ÷ anterior. ▲ verde = más actividad que el mes pasado; ▼ rojo = menos. Cargá los números al agregar o editar cada cuenta.</p></div>
+<span id="s-cuentas"></span><div class="card">
+<h2>Cuentas</h2>
+<div class="tools">
+<input id="q" placeholder="Buscar cuenta…">
+<select id="csm"><option value="">Todos los CSM</option></select><select id="sk" title="Ordenar por"></select><button id="sd"></button>
+<button class="on" onclick="fo()">+ Agregar cuenta</button><button onclick="io()">Importar</button><button onclick="ex(1)">Exportar</button><button onclick="cf(this,clr)">Limpiar ejemplos</button>
+</div>
+<div class="tw"><table><thead><tr id="hd"></tr></thead><tbody id="tb"></tbody></table></div>
+<p class="note">Health Score = Uso 25% · Adopción 20% · NPS 15% · Tickets abiertos 15% · Último contacto 10% · Pagos 10% · Champion 5%. Chance de baja = (100 − Health) × 0,9, +8 si renueva en ≤60 días, +6 si hay mora &gt;30 días. Tareas: variación % = (mes actual − mes anterior) ÷ mes anterior. Los datos iniciales son de ejemplo: usá «Limpiar ejemplos» y cargá tus cuentas con «Agregar cuenta».</p>
+</div>
+</div>
+<dialog id="id" style="border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);max-width:720px;width:calc(100% - 24px);padding:16px"><h2 style="font-size:17px">Importar cuentas (carga masiva)</h2><p class="ds" style="margin-top:0">Pegá las filas desde Excel o Google Sheets, o subí un archivo CSV. Orden de columnas: <b>Cuenta, CSM, Plan, MRR, Renueva en (días), Uso %, Adopción %, NPS, Tickets, Últ. contacto (d), Mora (d), Champion (Sí/No), Tareas mes actual, Tareas mes anterior, CSAT (1-5), Expansión MRR, Contracción MRR, Estado (Activa/Baja), Días hasta primer valor</b>. Las últimas cinco son opcionales. La fila de títulos es opcional. Si el nombre ya existe, la cuenta se <b>actualiza</b>; si no, se <b>agrega</b>. Para editar en masa: exportá, cambiá en Excel y volvé a importar.</p><input type="file" id="imf" accept=".csv,.tsv,.txt"><textarea id="imt" rows="9" style="width:100%;margin-top:8px;font:12px monospace;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px" placeholder="Acme Logística	Ana	Enterprise	18500	35	82	76	8	2	6	0	Sí	22	18"></textarea><p id="ie" class="ds"></p><div class="tools" style="margin-top:8px"><button class="on" onclick="imp()">Importar</button><button onclick="ex(0)">Plantilla CSV</button><button onclick="document.getElementById('id').close()">Cerrar</button></div></dialog>
+<dialog id="fd" style="border:1px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);max-width:600px;width:calc(100% - 24px);padding:16px"><h2 id="ft" style="font-size:17px">Agregar cuenta</h2><div class="fm" id="ff"></div><p class="ds">Mes actual: <b id="m1"></b> · Mes anterior: <b id="m2"></b>. Cargá cuántas tareas realizaste en cada uno para ver la variación %.</p><p id="fe" style="color:var(--r);font-size:12px;margin:6px 0 0"></p><div class="tools" style="margin-top:10px"><button class="on" onclick="sv()">Guardar</button><button onclick="document.getElementById('fd').close()">Cancelar</button></div></dialog>
+<aside id="dr"></aside>
+<script src="app.js"></script>
+</body>
+</html>
